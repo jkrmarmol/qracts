@@ -1,33 +1,14 @@
 'use client';
 import Link from 'next/link';
-import UserAuthForm from '@/components/forms/user-auth-form';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { signIn, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { FormEvent } from 'react';
+import UserAuthFormRegister from '@/components/forms/user-auth-form-register';
 
 export default function AuthenticationPage() {
-  const router = useRouter();
-  const session = useSession();
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const res = await signIn('credentials', {
-      email: e.currentTarget.email.value,
-      password: e.currentTarget.password.value,
-      redirect: false
-    });
-    if (res?.ok) {
-      router.replace('/dashboard');
-    }
-  };
-  if (session.status === 'authenticated') {
-    router.replace('/dashboard');
-  }
   return (
     <div className="relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
       <Link
-        href="/examples/authentication"
+        href="/"
         className={cn(
           buttonVariants({ variant: 'ghost' }),
           'absolute right-4 top-4  md:right-8 md:top-8'
@@ -73,7 +54,7 @@ export default function AuthenticationPage() {
               Enter your email below to create your account
             </p>
           </div>
-          <UserAuthForm />
+          <UserAuthFormRegister />
           <p className="px-8 text-center text-sm text-muted-foreground">
             By clicking continue, you agree to our{' '}
             <Link

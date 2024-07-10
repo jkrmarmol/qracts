@@ -1,42 +1,59 @@
+import { PrismaClient } from '@prisma/client';
 import { NextAuthConfig } from 'next-auth';
 import CredentialProvider from 'next-auth/providers/credentials';
-import GithubProvider from 'next-auth/providers/github';
 
+const prisma = new PrismaClient();
 const authConfig = {
+  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: 'jwt'
+  },
+  callbacks: {
+    session: ({ session, token }) => ({
+      ...session,
+      user: {
+        ...session.user,
+        id: token.sub
+      }
+    })
+  },
   providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_ID ?? '',
-      clientSecret: process.env.GITHUB_SECRET ?? ''
-    }),
     CredentialProvider({
-      credentials: {
-        email: {
-          type: 'email'
-        },
-        password: {
-          type: 'password'
-        }
-      },
+      type: 'credentials',
+      credentials: {},
       async authorize(credentials, req) {
-        const user = {
-          id: '1',
-          name: 'John',
-          email: credentials?.email as string
+        const { email, password } = credentials as {
+          email: string;
+          password: string;
         };
-        if (user) {
-          // Any object returned will be saved in `user` property of the JWT
-          return user;
-        } else {
-          // If you return null then an error will be displayed advising the user to check their details.
-          return null;
+        const checkEmailExist = await prisma.users.findFirst({
+          where: { email }
+        });
+        // if (email === 'jkrmarmol@gmail.com' && password === 'kurt') {
+        //   return {
+        //     id: 'c187b753-b503-42e9-883d-4e34bfd578bd',
+        //     userId: 'c187b753-b503-42e9-883d-4e34bfd578bd',
+        //     name: 'Kurt Marmol',
+        //     email: 'jkrmarmol@gmail.com'
+        //   };
+        // }
 
-          // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
-        }
+        // if (email === 'johndoe@mail.com' && password === 'doe') {
+        //   return {
+        //     id: '4eeaa444-a0c0-4997-a832-813319a6d71d',
+        //     userId: '4eeaa444-a0c0-4997-a832-813319a6d71d',
+        //     name: 'John Doe',
+        //     email: 'johndoe@mail.com'
+        //   };
+        // }
+        return null;
       }
     })
   ],
   pages: {
-    signIn: '/' //sigin page
+    signIn: '/',
+    signOut: '/auth/signout',
+    error: '/auth/error'
   }
 } satisfies NextAuthConfig;
 
