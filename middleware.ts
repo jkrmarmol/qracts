@@ -1,17 +1,15 @@
 // Protecting routes with next-auth
 // https://next-auth.js.org/configuration/nextjs#middleware
 // https://nextjs.org/docs/app/building-your-application/routing/middleware
-
 import NextAuth from 'next-auth';
 import authConfig from './auth.config';
 
-const { auth } = NextAuth(authConfig);
+export default NextAuth(authConfig).auth;
 
-export default auth((req) => {
-  if (!req.auth) {
-    const url = req.url.replace(req.nextUrl.pathname, '/');
-    return Response.redirect(url);
-  }
-});
-
-export const config = { matcher: ['/dashboard/:path*'] };
+export const config = {
+  // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
+  matcher: [
+    '/((?!api|_next/static|_next/image|.*\\.png$).*)',
+    '/dashboard/:path*'
+  ]
+};

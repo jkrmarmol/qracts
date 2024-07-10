@@ -5,7 +5,6 @@ import type { Metadata } from 'next';
 import NextTopLoader from 'nextjs-toploader';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { auth } from '@/auth';
 import SessionWrapper from '@/components/session-wrapper';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -20,13 +19,12 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
   return (
     <SessionWrapper>
       <html lang="en" suppressHydrationWarning>
         <body className={`${inter.className} overflow-hidden`}>
           <NextTopLoader />
-          <Providers session={session}>
+          <Providers session={null}>
             <Toaster />
             {children}
           </Providers>

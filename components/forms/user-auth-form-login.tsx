@@ -11,7 +11,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn, useSession } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -24,6 +24,7 @@ const formSchema = z.object({
 type UserFormValue = z.infer<typeof formSchema>;
 
 export default function UserAuthFormLogin() {
+  const router = useRouter();
   const session = useSession();
   const [loading, setLoading] = useState(false);
   const defaultValues = {
@@ -46,6 +47,9 @@ export default function UserAuthFormLogin() {
       redirect: false
     });
     console.log(res);
+    if (res?.url && res?.error === null) {
+      return router.push('/dashboard');
+    }
   };
 
   return (

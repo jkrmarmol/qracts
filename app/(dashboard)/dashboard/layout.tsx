@@ -1,17 +1,24 @@
+'use client';
+import { useEffect } from 'react';
 import Header from '@/components/layout/header';
 import Sidebar from '@/components/layout/sidebar';
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Next Shadcn Dashboard Starter',
-  description: 'Basic dashboard with Next.js and Shadcn'
-};
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardLayout({
   children
 }: {
   children: React.ReactNode;
 }) {
+  const session = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    console.log(session);
+    if (session.status === 'unauthenticated') {
+      return router.push('/');
+    }
+  }, [session]);
   return (
     <>
       <Header />

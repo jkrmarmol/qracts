@@ -2,28 +2,21 @@
 import Link from 'next/link';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { signIn, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { FormEvent } from 'react';
 import UserAuthFormLogin from '@/components/forms/user-auth-form-login';
+import { useSession } from 'next-auth/react';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function AuthenticationPage() {
-  const router = useRouter();
   const session = useSession();
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const res = await signIn('credentials', {
-      email: e.currentTarget.email.value,
-      password: e.currentTarget.password.value,
-      redirect: false
-    });
-    if (res?.ok) {
-      router.replace('/dashboard');
+  const router = useRouter();
+
+  useEffect(() => {
+    console.log(session);
+    if (session.status === 'authenticated') {
+      return router.push('/dashboard');
     }
-  };
-  if (session.status === 'authenticated') {
-    router.replace('/dashboard');
-  }
+  }, [session]);
   return (
     <div className="relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
       <Link
