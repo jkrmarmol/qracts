@@ -25,7 +25,7 @@ model Users {
 
 model Sections {
   id         String       @id @default(uuid())
-  name       String
+  name       String       @unique
   userId     Users        @relation(fields: [usersId], references: [id])
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
