@@ -1,10 +1,11 @@
 'use client';
+
 import * as z from 'zod';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Trash } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,6 +19,8 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { Heading } from '@/components/ui/heading';
 import { useToast } from '../ui/use-toast';
+import axios, { AxiosError } from 'axios';
+
 const formSchema = z.object({
   name: z
     .string()
@@ -29,13 +32,13 @@ type ProductFormValues = z.infer<typeof formSchema>;
 interface ProductFormProps {
   initialData: any | null;
   categories: any;
+  editId: string;
 }
 
 export const SectionProductForm: React.FC<ProductFormProps> = ({
   initialData,
   categories
 }) => {
-  const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
@@ -44,50 +47,66 @@ export const SectionProductForm: React.FC<ProductFormProps> = ({
   const description = initialData ? 'Edit a section.' : 'Add a new section';
   const toastMessage = initialData ? 'Section updated.' : 'Section created.';
   const action = initialData ? 'Save changes' : 'Create';
-
-  const defaultValues = initialData
-    ? initialData
-    : {
-        name: ''
-      };
-
+  const defaultValues = initialData ? initialData : { name: '' };
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues
   });
-
   const onSubmit = async (data: ProductFormValues) => {
     try {
       setLoading(true);
-      console.log(data);
-      // router.refresh();
-      // router.push(`/dashboard/products`);
-      toast({
-        variant: 'destructive',
-        title: 'Uh oh! Something went wrong.',
-        description: 'There was a problem with your request.'
-      });
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Uh oh! Something went wrong.',
-        description: 'There was a problem with your request.'
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+      if (initialData) {
+        const response = await axios.put(
+          `/api/section/${initialData?.id}`,
+          data
+        );
+        if (Object.keys(response.data)[0] === 'id') {
+          toast({
+            variant: 'default',
+            title: 'Section Update',
+            description: 'You have successfully update section'
+          });
+          return router.push('/dashboard/section');
+        }
+        return toast({
+          variant: 'destructive',
+          title: 'Uh oh! Something went wrong.',
+          description: 'There was a problem with your request.'
+        });
+      } else {
+        const response = await axios.post('/api/section', data);
+        if (Object.keys(response.data)[0] === 'id') {
+          toast({
+            variant: 'default',
+            title: 'Section Created',
+            description: 'You have added new section'
+          });
+          return router.push('/dashboard/section');
+        }
+      }
 
-  const onDelete = async () => {
-    try {
-      setLoading(true);
-      //   await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
-      router.refresh();
-      router.push(`/${params?.storeId}/products`);
-    } catch (error: any) {
+      return toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: 'There was a problem with your request.'
+      });
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        if (err.response?.data.message === 'Name Already Exist') {
+          return toast({
+            variant: 'destructive',
+            title: 'Name Already Exist',
+            description: 'The name you enter is already existing'
+          });
+        }
+        return toast({
+          variant: 'destructive',
+          title: 'Uh oh! Something went wrong.',
+          description: 'There was a problem with your request.'
+        });
+      }
     } finally {
       setLoading(false);
-      setOpen(false);
     }
   };
 

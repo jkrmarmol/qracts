@@ -14,7 +14,6 @@ export default function DashboardLayout({
   const router = useRouter();
 
   useEffect(() => {
-    console.log(session);
     if (session.status === 'unauthenticated') {
       return router.push('/');
     }

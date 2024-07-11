@@ -39,7 +39,9 @@ model Students {
   middleName String
   lastName   String
   birthDate  DateTime
+  pinCode    String
   studentNo  String
+  email      String       @unique
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
   Attendance Attendance[]

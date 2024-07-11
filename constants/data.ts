@@ -1,5 +1,56 @@
 import { Icons } from '@/components/icons';
-import { NavItem, SidebarNavItem } from '@/types';
+import { NavItem } from '@/types';
+
+export type Section = {
+  id: string;
+  name: string;
+  usersId: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export const section: Section[] = [
+  {
+    id: '1',
+    name: 'Candice Schiner',
+    usersId: '12313234',
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    id: '2',
+    name: 'Kurt Marmol',
+    usersId: '12313234',
+    createdAt: new Date(),
+    updatedAt: new Date()
+  }
+];
+
+export type Students = {
+  id: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  birthDate: Date;
+  studentNo: string;
+  pinCode: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export const student: Students[] = [
+  {
+    id: 'kusgdf',
+    firstName: 'Kurt',
+    middleName: 'Medrano',
+    lastName: 'Marmol',
+    birthDate: new Date(),
+    studentNo: 'CKyhgcasdf',
+    pinCode: 'klusdghf',
+    createdAt: new Date(),
+    updatedAt: new Date()
+  }
+];
 
 export type User = {
   id: number;
@@ -9,6 +60,7 @@ export type User = {
   verified: boolean;
   status: string;
 };
+
 export const users: User[] = [
   {
     id: 1,

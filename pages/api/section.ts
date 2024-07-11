@@ -28,6 +28,21 @@ export default async function handler(
     });
     return res.json(response);
   }
+  if (req.method === 'GET') {
+    const session = await auth(req, res);
+    if (session === null)
+      return res.status(401).json({ message: 'Unauthorized', statusCode: 401 });
+    const userId = session.user && session.user.id;
+    if (!userId)
+      return res
+        .status(500)
+        .json({ message: 'Something went wrong', statusCode: 500 });
+    const data = await prisma.sections.findMany({
+      where: { usersId: userId },
+      orderBy: { createdAt: 'desc' }
+    });
+    return res.json(data);
+  }
   return res
     .status(500)
     .json({ message: 'Internal Server Error', status: 500 });
