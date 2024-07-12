@@ -18,6 +18,8 @@ import { Calendar } from '../ui/calendar';
 import { AlertModal } from '../modal/alert-modal';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
+import axios, { AxiosError } from 'axios';
+import FormData from 'form-data';
 
 export const IMG_MAX_LIMIT = 6;
 const formSchema = z.object({
@@ -52,11 +54,13 @@ export const StudentProductForm: React.FC<ProductFormProps> = ({ initialData, ca
   const defaultValues = initialData
     ? initialData
     : {
-        name: '',
-        description: '',
-        price: 0,
-        imgUrl: [],
-        category: ''
+        studentNo: '',
+        firstName: '',
+        middleName: '',
+        lastName: '',
+        email: '',
+        images: {},
+        birthDate: new Date()
       };
 
   const form = useForm<ProductFormValues>({
@@ -67,6 +71,7 @@ export const StudentProductForm: React.FC<ProductFormProps> = ({ initialData, ca
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const reader = new FileReader();
     try {
+      console.log(acceptedFiles[0]);
       reader.onload = () => setPreview(reader.result);
       reader.readAsDataURL(acceptedFiles[0]);
       form.setValue('image', acceptedFiles[0]);
@@ -80,32 +85,65 @@ export const StudentProductForm: React.FC<ProductFormProps> = ({ initialData, ca
     onDrop,
     maxFiles: 1,
     maxSize: 1000000,
-    accept: { 'image/png': [], 'image/jpg': [], 'image/jpeg': [] }
+    accept: { 'image/png': [], 'image/jpg': [], 'image/jpeg': [] },
+    multiple: false
   });
 
   const onSubmit = async (data: ProductFormValues) => {
     try {
       setLoading(true);
-      console.log(data);
       if (initialData) {
-        // await axios.post(`/api/products/edit-product/${initialData._id}`, data);
       } else {
-        // const res = await axios.post(`/api/products/create-product`, data);
-        // console.log("product", res);
+        const formData = new FormData();
+        formData.append('studentNo', data.studentNo);
+        formData.append('firstName', data.firstName);
+        formData.append('middleName', data.middleName);
+        formData.append('lastName', data.lastName);
+        formData.append('email', data.email);
+        formData.append('birthDate', data.birthDate);
+        formData.append('images', data.image);
+
+        const response = await axios.post('/api/student', formData);
+        const dataResponse = await response.data;
+        if (dataResponse.message === 'Student Created') {
+          toast({
+            variant: 'default',
+            title: 'Student Created',
+            description: 'The Student information profile has been created.'
+          });
+          router.refresh();
+          return router.push('/dashboard/student');
+        }
       }
       // router.refresh();
       // router.push(`/dashboard/student`);
-      toast({
+      return toast({
         variant: 'destructive',
         title: 'Uh oh! Something went wrong.',
         description: 'There was a problem with your request.'
       });
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Uh oh! Something went wrong.',
-        description: 'There was a problem with your request.'
-      });
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        if (err.response?.data.message === 'Email Already Exist') {
+          return toast({
+            variant: 'destructive',
+            title: 'Email Already Exist',
+            description: 'The email you enter is already existing'
+          });
+        }
+        if (err.response?.data.message === 'All Field Required') {
+          return toast({
+            variant: 'destructive',
+            title: 'All Field Required',
+            description: 'It is required to fill up the required field.'
+          });
+        }
+        return toast({
+          variant: 'destructive',
+          title: 'Uh oh! Something went wrong.',
+          description: 'There was a problem with your request.'
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -147,7 +185,7 @@ export const StudentProductForm: React.FC<ProductFormProps> = ({ initialData, ca
                 <FormControl>
                   <div {...getRootProps()} className="overflow-hidden">
                     <Input {...getInputProps()} type="file" disabled={loading} />
-                    <Image src={preview || '/image-placeholder.png'} alt="Image" width={200} height={200} className=" rounded-md object-cover" />
+                    <Image src={preview || '/image-placeholder.png'} priority alt="Image Placeholder" width={200} height={200} className=" rounded-md object-cover" />
                   </div>
                 </FormControl>
                 <FormMessage />

@@ -1,9 +1,8 @@
 import { auth } from '@/auth';
 import prisma from '@/lib/prisma';
-import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse } from 'next';
 import cloudinary from '@/lib/cloudinary';
-import { Formidable, Fields, Files } from 'formidable';
-import { Students } from '@prisma/client';
+import { Formidable, Files } from 'formidable';
 import nodemailer from 'nodemailer';
 import { hash } from 'bcryptjs';
 
