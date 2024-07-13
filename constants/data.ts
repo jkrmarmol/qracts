@@ -68,7 +68,7 @@ export type User = {
 export type Attendance = {
   id: string;
   studentsId: string;
-  fullName: string;
+  studentName: string;
   sectionsId: string;
   sectionName: string;
   createdAt: Date;
@@ -197,27 +197,33 @@ export const navItems: NavItem[] = [
     label: 'media'
   },
   {
-    title: 'Employee',
+    title: 'Attendance',
     href: '/dashboard/attendance',
     icon: 'billing',
     label: 'attendance'
   },
+  // {
+  //   title: 'Profile',
+  //   href: '/dashboard/profile',
+  //   icon: 'profile',
+  //   label: 'profile'
+  // },
+  // {
+  //   title: 'Kanban',
+  //   href: '/dashboard/kanban',
+  //   icon: 'kanban',
+  //   label: 'kanban'
+  // },
+  // {
+  //   title: 'Login',
+  //   href: '/',
+  //   icon: 'login',
+  //   label: 'login'
+  // },
   {
-    title: 'Profile',
-    href: '/dashboard/profile',
-    icon: 'profile',
-    label: 'profile'
-  },
-  {
-    title: 'Kanban',
-    href: '/dashboard/kanban',
-    icon: 'kanban',
-    label: 'kanban'
-  },
-  {
-    title: 'Login',
+    title: 'Logout',
     href: '/',
     icon: 'login',
-    label: 'login'
+    label: 'logout'
   }
 ];

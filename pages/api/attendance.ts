@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '@/lib/prisma';
 import { compare } from 'bcrypt';
+import { auth } from '@/auth';
 
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -12,6 +13,51 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
     //   if (checkSectionExist === null) return res.status(404).json({ message: 'Section Not Found', statusCode: 404 });
     //   return res.json({ message: 'Valid Section ID', statusCode: 200 });
     // }
+    if (req.method === 'GET') {
+      const session = await auth(req, res);
+      if (session === null) return res.status(401).json({ message: 'Unauthorized', statusCode: 401 });
+      const userId = session.user && session.user.id;
+      if (!userId) return res.status(500).json({ message: 'Something went wrong', statusCode: 500 });
+
+      const sections = await prisma.sections.findMany({
+        where: {
+          usersId: userId
+        },
+        select: {
+          id: true
+        }
+      });
+
+      const sectionIds = sections.map((section) => section.id);
+
+      const response = await prisma.attendance.findMany({
+        where: {
+          sectionsId: {
+            in: sectionIds
+          }
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      });
+
+      const result = await Promise.all(
+        response.map(async (record) => {
+          const getName = await prisma.students.findFirst({ where: { id: record.studentsId } });
+          const sectionName = await prisma.sections.findFirst({ where: { id: record.sectionsId } });
+          return {
+            id: record.id,
+            studentsId: record.studentsId,
+            studentName: `${getName?.lastName || ''}, ${getName?.firstName || ''} ${getName?.middleName || ''}`,
+            sectionsId: record.sectionsId,
+            sectionName: sectionName?.name || '',
+            createdAt: record.createdAt,
+            updatedAt: record.updatedAt
+          };
+        })
+      );
+      return res.json(result);
+    }
     if (req.method === 'POST') {
       const { studentsId, sectionsId, pinCode } = req.body;
       if (studentsId) {
