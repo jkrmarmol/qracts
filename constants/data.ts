@@ -34,6 +34,8 @@ export type Students = {
   birthDate: Date;
   studentNo: string;
   pinCode: string;
+  email: string;
+  images: string;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -48,7 +50,9 @@ export const student: Students[] = [
     studentNo: 'CKyhgcasdf',
     pinCode: 'klusdghf',
     createdAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
+    email: '',
+    images: ''
   }
 ];
 
@@ -59,6 +63,16 @@ export type User = {
   role: string;
   verified: boolean;
   status: string;
+};
+
+export type Attendance = {
+  id: string;
+  studentsId: string;
+  fullName: string;
+  sectionsId: string;
+  sectionName: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export const users: User[] = [
@@ -184,9 +198,9 @@ export const navItems: NavItem[] = [
   },
   {
     title: 'Employee',
-    href: '/dashboard/employee',
-    icon: 'employee',
-    label: 'employee'
+    href: '/dashboard/attendance',
+    icon: 'billing',
+    label: 'attendance'
   },
   {
     title: 'Profile',

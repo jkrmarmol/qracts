@@ -1,9 +1,8 @@
 import BreadCrumb from '@/components/breadcrumb';
 import { SectionProductForm } from '@/components/forms/section-product-form';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 
-const prisma = new PrismaClient();
 export default async function Page({ params }: { params: { userId: string } }) {
   const breadcrumbItems = [
     { title: 'Section', link: '/dashboard/section' },

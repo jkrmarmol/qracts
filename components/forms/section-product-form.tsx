@@ -1,30 +1,21 @@
 'use client';
 
 import * as z from 'zod';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Separator } from '@/components/ui/separator';
 import { Heading } from '@/components/ui/heading';
 import { useToast } from '../ui/use-toast';
 import axios, { AxiosError } from 'axios';
 
 const formSchema = z.object({
-  name: z
-    .string()
-    .min(3, { message: 'Product Name must be at least 3 characters' })
+  name: z.string().min(3, { message: 'Product Name must be at least 3 characters' })
 });
 
 type ProductFormValues = z.infer<typeof formSchema>;
@@ -35,10 +26,7 @@ interface ProductFormProps {
   editId: string;
 }
 
-export const SectionProductForm: React.FC<ProductFormProps> = ({
-  initialData,
-  categories
-}) => {
+export const SectionProductForm: React.FC<ProductFormProps> = ({ initialData, categories }) => {
   const router = useRouter();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
@@ -56,10 +44,7 @@ export const SectionProductForm: React.FC<ProductFormProps> = ({
     try {
       setLoading(true);
       if (initialData) {
-        const response = await axios.put(
-          `/api/section/${initialData?.id}`,
-          data
-        );
+        const response = await axios.put(`/api/section/${initialData?.id}`, data);
         if (Object.keys(response.data)[0] === 'id') {
           toast({
             variant: 'default',
@@ -115,22 +100,14 @@ export const SectionProductForm: React.FC<ProductFormProps> = ({
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (
-          <Button
-            disabled={loading}
-            variant="destructive"
-            size="sm"
-            onClick={() => setOpen(true)}
-          >
+          <Button disabled={loading} variant="destructive" size="sm" onClick={() => setOpen(true)}>
             <Trash className="h-4 w-4" />
           </Button>
         )}
       </div>
       <Separator />
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-8"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
           <div className="gap-8 md:grid md:grid-cols-3">
             <FormField
               control={form.control}
@@ -139,11 +116,7 @@ export const SectionProductForm: React.FC<ProductFormProps> = ({
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Section name"
-                      {...field}
-                    />
+                    <Input disabled={loading} placeholder="Section name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

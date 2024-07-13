@@ -1,6 +1,6 @@
 'use client';
 import * as z from 'zod';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { CalendarIcon, Trash } from 'lucide-react';
@@ -23,7 +23,7 @@ import FormData from 'form-data';
 
 export const IMG_MAX_LIMIT = 6;
 const formSchema = z.object({
-  image: z.instanceof(File).refine((file) => file.size !== 0, 'Please upload an image'),
+  image: z.any().refine((file) => file.size !== 0, 'Please upload an image'),
   firstName: z.string().min(3, { message: 'First Name must be at least 3 characters' }),
   middleName: z.string().min(3, { message: 'Middle Name must be at least 3 characters' }),
   lastName: z.string().min(3, { message: 'Last Name must be at least 3 characters' }),
@@ -40,7 +40,7 @@ interface ProductFormProps {
 }
 
 export const StudentProductForm: React.FC<ProductFormProps> = ({ initialData, categories }) => {
-  const [date, setDate] = useState<Date>();
+  const [date, setDate] = useState<any>(initialData && initialData.birthDate);
   const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
@@ -50,7 +50,7 @@ export const StudentProductForm: React.FC<ProductFormProps> = ({ initialData, ca
   const description = initialData ? 'Edit a student.' : 'Add a new student';
   const toastMessage = initialData ? 'Student updated.' : 'Student created.';
   const action = initialData ? 'Save changes' : 'Create';
-  const [preview, setPreview] = useState<any>();
+  const [preview, setPreview] = useState<any>(initialData && initialData.images);
   const defaultValues = initialData
     ? initialData
     : {
@@ -71,7 +71,6 @@ export const StudentProductForm: React.FC<ProductFormProps> = ({ initialData, ca
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const reader = new FileReader();
     try {
-      console.log(acceptedFiles[0]);
       reader.onload = () => setPreview(reader.result);
       reader.readAsDataURL(acceptedFiles[0]);
       form.setValue('image', acceptedFiles[0]);
@@ -93,6 +92,25 @@ export const StudentProductForm: React.FC<ProductFormProps> = ({ initialData, ca
     try {
       setLoading(true);
       if (initialData) {
+        const formData = new FormData();
+        console.log(data.image);
+        formData.append('studentNo', data.studentNo);
+        formData.append('firstName', data.firstName);
+        formData.append('middleName', data.middleName);
+        formData.append('lastName', data.lastName);
+        formData.append('email', data.email);
+        formData.append('birthDate', data.birthDate);
+        formData.append('images', data.image);
+        const response = await axios.put(`/api/student/${initialData.id}`, formData);
+        if (Object.keys(response.data)[0] === 'id') {
+          toast({
+            variant: 'default',
+            title: 'Information Updated',
+            description: 'The Student information has been updated.'
+          });
+          router.refresh();
+          return router.push('/dashboard/student');
+        }
       } else {
         const formData = new FormData();
         formData.append('studentNo', data.studentNo);
@@ -115,8 +133,6 @@ export const StudentProductForm: React.FC<ProductFormProps> = ({ initialData, ca
           return router.push('/dashboard/student');
         }
       }
-      // router.refresh();
-      // router.push(`/dashboard/student`);
       return toast({
         variant: 'destructive',
         title: 'Uh oh! Something went wrong.',
@@ -161,6 +177,13 @@ export const StudentProductForm: React.FC<ProductFormProps> = ({ initialData, ca
       setOpen(false);
     }
   };
+
+  useEffect(() => {
+    if (initialData) {
+      form.setValue('image', initialData.images, { shouldValidate: false, shouldTouch: false });
+    }
+    // form.tri
+  }, [initialData && initialData.images]);
 
   return (
     <>
