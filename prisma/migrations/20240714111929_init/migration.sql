@@ -28,7 +28,10 @@ CREATE TABLE "Students" (
     "middleName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
     "birthDate" TIMESTAMP(3) NOT NULL,
+    "pinCode" TEXT NOT NULL,
     "studentNo" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "images" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -48,6 +51,12 @@ CREATE TABLE "Attendance" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Users_email_key" ON "Users"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Sections_name_key" ON "Sections"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Students_email_key" ON "Students"("email");
 
 -- AddForeignKey
 ALTER TABLE "Sections" ADD CONSTRAINT "Sections_usersId_fkey" FOREIGN KEY ("usersId") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
