@@ -7,7 +7,7 @@ import { Section } from '@/constants/data';
 import axios from 'axios';
 
 const breadcrumbItems = [{ title: 'Section', link: '/dashboard/section' }];
-export default function page() {
+export default function Page() {
   const [data, setData] = useState<Array<Section>>([]);
   useEffect(() => {
     (async () => {

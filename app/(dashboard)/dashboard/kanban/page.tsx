@@ -4,7 +4,7 @@ import NewTaskDialog from '@/components/kanban/new-task-dialog';
 import { Heading } from '@/components/ui/heading';
 
 const breadcrumbItems = [{ title: 'Kanban', link: '/dashboard/kanban' }];
-export default function page() {
+export default function Page() {
   return (
     <>
       <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">

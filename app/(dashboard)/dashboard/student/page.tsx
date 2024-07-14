@@ -3,7 +3,7 @@ import { StudentClient } from '@/components/tables/user-tables/student-client';
 import prisma from '@/lib/prisma';
 
 const breadcrumbItems = [{ title: 'Student', link: '/dashboard/student' }];
-export default async function page() {
+export default async function Page() {
   const data = await prisma.students.findMany();
   return (
     <>

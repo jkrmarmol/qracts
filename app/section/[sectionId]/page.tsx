@@ -9,7 +9,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
-export default function page({ params }: { params: { sectionId: string } }) {
+export default function Page({ params }: { params: { sectionId: string } }) {
   const { toast } = useToast();
   const [pinCodeValue, setPinCodeValue] = useState<string>('');
   const [invalidSection, setInvalidSection] = useState<boolean>(false);

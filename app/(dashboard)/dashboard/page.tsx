@@ -13,7 +13,7 @@ interface StatisticsType {
   };
 }
 
-export default function page() {
+export default function Page() {
   const [statistics, setStatistics] = useState<StatisticsType>();
   useEffect(() => {
     (async () => {
