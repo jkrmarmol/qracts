@@ -35,7 +35,9 @@ export default function page({ searchParams }: paramsProps) {
     (async () => {
       const res = await axios.get('/api/attendance');
       const attendanceRes = await res.data;
-      setData(attendanceRes);
+      if (typeof attendanceRes === 'object') {
+        setData(attendanceRes);
+      }
     })();
   }, []);
 

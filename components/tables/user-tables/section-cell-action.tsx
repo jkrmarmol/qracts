@@ -39,6 +39,16 @@ export const SectionCellAction: React.FC<CellActionProps> = ({ data }) => {
       });
     } catch (err) {
       if (err instanceof AxiosError) {
+        if (err.response) {
+          if (err.response.data.message === 'Section Deletion Invalid') {
+            return toast({
+              variant: 'destructive',
+              title: 'Section Deletion Invalid',
+              description: "You can't delete this section if it has already attendee"
+            });
+          }
+        }
+
         return toast({
           variant: 'destructive',
           title: 'Uh oh! Something went wrong.',

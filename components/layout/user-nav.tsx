@@ -33,22 +33,6 @@ export function UserNav() {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem>
-              Profile
-              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              Billing
-              <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              Settings
-              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem>New Team</DropdownMenuItem>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => signOut()}>
             Log out
             <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>

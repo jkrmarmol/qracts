@@ -2,10 +2,15 @@
 import { AlertModal } from '@/components/modal/alert-modal';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Students, User } from '@/constants/data';
+import { Students } from '@/constants/data';
+import { AxiosError } from 'axios';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import axios from 'axios';
+import { useToast } from '@/components/ui/use-toast';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 interface CellActionProps {
   data: Students;
@@ -15,8 +20,61 @@ export const StudentCellAction: React.FC<CellActionProps> = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
 
-  const onConfirm = async () => {};
+  const onConfirm = async () => {
+    try {
+      const response = await axios.delete(`/api/student/${data.id}`);
+      const dataResponse = await response.data;
+      if (dataResponse.message === 'Student Profile Deleted') {
+        toast({
+          variant: 'default',
+          title: 'Student Profile Deleted',
+          description: 'The student profile has been deleted'
+        });
+        setOpen(false);
+        revalidatePath('/dashboard/student');
+        return redirect('/dashboard/student');
+      }
+      return toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: 'There was a problem with your request.'
+      });
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        console.log(err.response?.data);
+        if (err.response) {
+          if (err.response.data.message === 'User Not Found') {
+            return toast({
+              variant: 'destructive',
+              title: 'User Not Found',
+              description: 'Student Has not in the list, please try again.'
+            });
+          }
+          if (err.response.data.message === 'ID Query Required') {
+            return toast({
+              variant: 'destructive',
+              title: 'ID Query Required',
+              description: 'The ID Query is required, please try again.'
+            });
+          }
+          if (err.response.data.message === 'Something went wrong') {
+            return toast({
+              variant: 'destructive',
+              title: 'Uh oh! Something went wrong.',
+              description: 'There was a problem with your request.'
+            });
+          }
+          return toast({
+            variant: 'destructive',
+            title: 'Uh oh! Something went wrong.',
+            description: 'There was a problem with your request.'
+          });
+        }
+      }
+    }
+  };
 
   return (
     <>
