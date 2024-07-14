@@ -5,6 +5,7 @@ import cloudinary from '@/lib/cloudinary';
 import { Formidable, Files } from 'formidable';
 import nodemailer from 'nodemailer';
 import { hash } from 'bcryptjs';
+import QRCode from 'qrcode';
 
 export const config = {
   api: {
@@ -64,32 +65,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const generatePinCode = Math.random().toString().substr(2, 4);
     const hashedPinCode = await hash(generatePinCode, 12);
 
-    // Start Send Node Email
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.GMAIL_EMAIL,
-        pass: process.env.GMAIL_APP_PASSWORD
-      }
-    });
-
-    const option = {
-      from: 'School Attendance <hello@gmail.com>',
-      to: fields.email[0],
-      subject: 'School Attendance OTP',
-      html: generatePinCode,
-      headers: {
-        priority: 'high',
-        importance: 'high'
-      }
-    };
-
-    const transEmail = await transporter.sendMail(option);
-    if (!transEmail.accepted[0]) {
-      return res.status(500).json({ message: 'Something went wrong', statusCode: 500 });
-    }
-    // End Send Node Email
-
     // Start Upload Image into Cloudinary
     const uploadImageCloud = await cloudinary.uploader.upload(files.images[0].filepath, {
       folder: '/villanueva-school-atttendance'
@@ -106,7 +81,44 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       pinCode: hashedPinCode,
       images: uploadImageCloud.secure_url
     };
-    await prisma.students.create({ data });
+    const createStudent = await prisma.students.create({ data });
+
+    // Start Send Node Email
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_EMAIL,
+        pass: process.env.GMAIL_APP_PASSWORD
+      }
+    });
+
+    const option = {
+      from: 'School Attendance <hello@gmail.com>',
+      to: fields.email[0],
+      subject: 'School Attendance OTP',
+      html: `
+        <p>Pin Code:</p> : ${generatePinCode} <br />
+
+      `,
+      attachments: [
+        {
+          filename: `qr-code${fields.lastName}-${fields.firstName}-${new Date()}.png`,
+          content: await QRCode.toBuffer(createStudent.id),
+          contentType: 'image/png'
+        }
+      ],
+      headers: {
+        priority: 'high',
+        importance: 'high'
+      }
+    };
+
+    const transEmail = await transporter.sendMail(option);
+    if (!transEmail.accepted[0]) {
+      return res.status(500).json({ message: 'Something went wrong', statusCode: 500 });
+    }
+    // End Send Node Email
+
     return res.json({ message: 'Student Created', statusCode: 200 });
   }
   if (req.method === 'GET') {
