@@ -10,8 +10,18 @@ import SessionWrapper from '@/components/session-wrapper';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Next Shadcn',
-  description: 'Basic dashboard with Next.js and Shadcn'
+  title: 'Qracts',
+  description: 'Qracts - School Attendance System',
+  icons: [
+    {
+      url: '/qracts-logo.png',
+      media: '(prefers-color-scheme: light)'
+    },
+    {
+      url: '/qracts-logo.png',
+      media: '(prefers-color-scheme: dark)'
+    }
+  ]
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
