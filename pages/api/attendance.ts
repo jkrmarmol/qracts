@@ -94,7 +94,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
             return 'not existing';
           })
         );
-        const filterAccount = checkEveryPassword.filter((e) => e !== 'not existing');
+        const filterAccount: any = checkEveryPassword.filter((e) => e !== 'not existing');
         if (!filterAccount.length) return res.status(404).json({ message: 'Student Not Found', statusCode: 404 });
 
         const today = new Date();
