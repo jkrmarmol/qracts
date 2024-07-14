@@ -2,7 +2,6 @@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Attendance } from '@/constants/data';
 import { ColumnDef } from '@tanstack/react-table';
-import { CellAction } from './cell-action';
 import moment from 'moment';
 
 export const columns: ColumnDef<Attendance>[] = [

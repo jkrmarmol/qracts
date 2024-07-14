@@ -114,7 +114,6 @@ export default function Page({ params }: { params: { sectionId: string } }) {
       } catch (err) {
         if (err instanceof AxiosError) {
           if (err.response) {
-            console.log(err.response.data);
             if (err.response.data.message === 'Section Not Found') {
               return setInvalidSection(true);
             }
@@ -122,7 +121,7 @@ export default function Page({ params }: { params: { sectionId: string } }) {
         }
       }
     })();
-  }, []);
+  }, [params.sectionId]);
 
   return (
     <>

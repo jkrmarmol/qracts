@@ -1,26 +1,13 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import axios, { AxiosError } from 'axios';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const formSchema = z
   .object({
@@ -85,58 +72,34 @@ export default function UserAuthFormRegister() {
 
   return (
     <>
-      <Dialog
-        open={modalMessage.success}
-        onOpenChange={() =>
-          setModalMessage((prev) => ({ ...prev, success: false }))
-        }
-      >
+      <Dialog open={modalMessage.success} onOpenChange={() => setModalMessage((prev) => ({ ...prev, success: false }))}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Registration Successful</DialogTitle>
-            <DialogDescription>
-              Your email has been successfully registered. Welcome aboard!
-            </DialogDescription>
+            <DialogDescription>Your email has been successfully registered. Welcome aboard!</DialogDescription>
           </DialogHeader>
         </DialogContent>
       </Dialog>
-      <Dialog
-        open={modalMessage.existingEmail}
-        onOpenChange={() =>
-          setModalMessage((prev) => ({ ...prev, existingEmail: false }))
-        }
-      >
+      <Dialog open={modalMessage.existingEmail} onOpenChange={() => setModalMessage((prev) => ({ ...prev, existingEmail: false }))}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Email Already Registered</DialogTitle>
             <DialogDescription>
-              This email is already in use. Please log in or use a different
-              email. Forgot your password? Reset it via 'Forgot Password'.
+              This email is already in use. Please log in or use a different email. Forgot your password? Reset it via Forgot Password.
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
       </Dialog>
-      <Dialog
-        open={modalMessage.error}
-        onOpenChange={() =>
-          setModalMessage((prev) => ({ ...prev, error: false }))
-        }
-      >
+      <Dialog open={modalMessage.error} onOpenChange={() => setModalMessage((prev) => ({ ...prev, error: false }))}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Server Unavailable</DialogTitle>
-            <DialogDescription>
-              Our server is currently unavailable. Please try again later. We
-              apologize for the inconvenience.
-            </DialogDescription>
+            <DialogDescription>Our server is currently unavailable. Please try again later. We apologize for the inconvenience.</DialogDescription>
           </DialogHeader>
         </DialogContent>
       </Dialog>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-2"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-2">
           <FormField
             control={form.control}
             name="email"
@@ -144,12 +107,7 @@ export default function UserAuthFormRegister() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input
-                    type="email"
-                    placeholder="Enter your email..."
-                    disabled={loading}
-                    {...field}
-                  />
+                  <Input type="email" placeholder="Enter your email..." disabled={loading} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -163,12 +121,7 @@ export default function UserAuthFormRegister() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Enter your password..."
-                    disabled={loading}
-                    {...field}
-                  />
+                  <Input type="password" placeholder="Enter your password..." disabled={loading} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -182,12 +135,7 @@ export default function UserAuthFormRegister() {
               <FormItem>
                 <FormLabel>Confirm Password</FormLabel>
                 <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Enter your confirmation password"
-                    disabled={loading}
-                    {...field}
-                  />
+                  <Input type="password" placeholder="Enter your confirmation password" disabled={loading} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

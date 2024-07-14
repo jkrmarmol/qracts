@@ -21,17 +21,20 @@ export const SectionCellAction: React.FC<CellActionProps> = ({ data }) => {
 
   const onConfirm = async () => {
     try {
+      setLoading(true);
       const response = await axios.delete(`/api/section/${data.id}`);
       const responseData = await response.data;
       if (responseData.message === 'Section Deleted') {
         router.push('/dashboard/section');
         router.refresh();
+        setLoading(false);
         return toast({
           variant: 'default',
           title: 'Section Delete',
           description: 'You have successfully deleted section'
         });
       }
+      setLoading(false);
       return toast({
         variant: 'destructive',
         title: 'Uh oh! Something went wrong.',
@@ -41,6 +44,7 @@ export const SectionCellAction: React.FC<CellActionProps> = ({ data }) => {
       if (err instanceof AxiosError) {
         if (err.response) {
           if (err.response.data.message === 'Section Deletion Invalid') {
+            setLoading(false);
             return toast({
               variant: 'destructive',
               title: 'Section Deletion Invalid',
@@ -48,7 +52,7 @@ export const SectionCellAction: React.FC<CellActionProps> = ({ data }) => {
             });
           }
         }
-
+        setLoading(false);
         return toast({
           variant: 'destructive',
           title: 'Uh oh! Something went wrong.',

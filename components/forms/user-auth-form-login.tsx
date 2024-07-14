@@ -1,17 +1,10 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signIn, useSession } from 'next-auth/react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -25,7 +18,6 @@ type UserFormValue = z.infer<typeof formSchema>;
 
 export default function UserAuthFormLogin() {
   const router = useRouter();
-  const session = useSession();
   const [loading, setLoading] = useState(false);
   const defaultValues = {
     email: '',
@@ -37,16 +29,13 @@ export default function UserAuthFormLogin() {
   });
 
   const onSubmit = async (data: UserFormValue) => {
-    console.log({
-      email: data.email,
-      password: data.password
-    });
+    setLoading(true);
     const res = await signIn('credentials', {
       email: data.email,
       password: data.password,
       redirect: false
     });
-    console.log(res);
+    setLoading(false);
     if (res?.url && res?.error === null) {
       return router.push('/dashboard');
     }
@@ -55,10 +44,7 @@ export default function UserAuthFormLogin() {
   return (
     <>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-2"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-2">
           <FormField
             control={form.control}
             name="email"
@@ -66,12 +52,7 @@ export default function UserAuthFormLogin() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input
-                    type="email"
-                    placeholder="Enter your email..."
-                    disabled={loading}
-                    {...field}
-                  />
+                  <Input type="email" placeholder="Enter your email..." disabled={loading} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -85,12 +66,7 @@ export default function UserAuthFormLogin() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Enter your password..."
-                    disabled={loading}
-                    {...field}
-                  />
+                  <Input type="password" placeholder="Enter your password..." disabled={loading} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

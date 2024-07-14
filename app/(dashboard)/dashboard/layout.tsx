@@ -13,7 +13,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     if (session.status === 'unauthenticated') {
       return router.push('/');
     }
-  }, [session]);
+  }, [session, router]);
   return (
     <>
       <Header />

@@ -24,9 +24,11 @@ export const StudentCellAction: React.FC<CellActionProps> = ({ data }) => {
 
   const onConfirm = async () => {
     try {
+      setLoading(true);
       const response = await axios.delete(`/api/student/${data.id}`);
       const dataResponse = await response.data;
       if (dataResponse.message === 'Student Profile Deleted') {
+        setLoading(false);
         toast({
           variant: 'default',
           title: 'Student Profile Deleted',
@@ -36,6 +38,7 @@ export const StudentCellAction: React.FC<CellActionProps> = ({ data }) => {
         revalidatePath('/dashboard/student');
         return redirect('/dashboard/student');
       }
+      setLoading(false);
       return toast({
         variant: 'destructive',
         title: 'Uh oh! Something went wrong.',
@@ -43,9 +46,9 @@ export const StudentCellAction: React.FC<CellActionProps> = ({ data }) => {
       });
     } catch (err) {
       if (err instanceof AxiosError) {
-        console.log(err.response?.data);
         if (err.response) {
           if (err.response.data.message === 'User Not Found') {
+            setLoading(false);
             return toast({
               variant: 'destructive',
               title: 'User Not Found',
@@ -53,6 +56,7 @@ export const StudentCellAction: React.FC<CellActionProps> = ({ data }) => {
             });
           }
           if (err.response.data.message === 'ID Query Required') {
+            setLoading(false);
             return toast({
               variant: 'destructive',
               title: 'ID Query Required',
@@ -60,12 +64,14 @@ export const StudentCellAction: React.FC<CellActionProps> = ({ data }) => {
             });
           }
           if (err.response.data.message === 'Something went wrong') {
+            setLoading(false);
             return toast({
               variant: 'destructive',
               title: 'Uh oh! Something went wrong.',
               description: 'There was a problem with your request.'
             });
           }
+          setLoading(false);
           return toast({
             variant: 'destructive',
             title: 'Uh oh! Something went wrong.',

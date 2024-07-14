@@ -29,11 +29,9 @@ interface ProductFormProps {
 export const SectionProductForm: React.FC<ProductFormProps> = ({ initialData, categories }) => {
   const router = useRouter();
   const { toast } = useToast();
-  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const title = initialData ? 'Edit section' : 'Create section';
   const description = initialData ? 'Edit a section.' : 'Add a new section';
-  const toastMessage = initialData ? 'Section updated.' : 'Section created.';
   const action = initialData ? 'Save changes' : 'Create';
   const defaultValues = initialData ? initialData : { name: '' };
   const form = useForm<ProductFormValues>({
@@ -100,7 +98,7 @@ export const SectionProductForm: React.FC<ProductFormProps> = ({ initialData, ca
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (
-          <Button disabled={loading} variant="destructive" size="sm" onClick={() => setOpen(true)}>
+          <Button disabled={loading} variant="destructive" size="sm">
             <Trash className="h-4 w-4" />
           </Button>
         )}

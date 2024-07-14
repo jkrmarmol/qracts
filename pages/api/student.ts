@@ -62,7 +62,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (checkEmailExist) return res.status(409).json({ message: 'Email Already Exist', statusCode: 409 });
 
     const generatePinCode = Math.random().toString().substr(2, 4);
-    console.log(generatePinCode);
     const hashedPinCode = await hash(generatePinCode, 12);
 
     // Start Send Node Email

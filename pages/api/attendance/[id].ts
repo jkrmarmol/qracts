@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '@/lib/prisma';
-import { compare } from 'bcrypt';
 
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
   try {

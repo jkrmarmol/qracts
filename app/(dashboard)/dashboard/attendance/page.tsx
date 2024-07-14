@@ -18,9 +18,6 @@ type paramsProps = {
 
 export default function Page({ searchParams }: paramsProps) {
   const page = Number(searchParams.page) || 1;
-  const pageLimit = Number(searchParams.limit) || 10;
-  const country = searchParams.search || null;
-  const offset = (page - 1) * pageLimit;
   const [data, setData] = useState<Attendance[]>([]);
   const attendanceLength = data.length;
 

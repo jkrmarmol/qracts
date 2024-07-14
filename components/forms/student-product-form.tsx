@@ -48,7 +48,6 @@ export const StudentProductForm: React.FC<ProductFormProps> = ({ initialData, ca
   const [loading, setLoading] = useState(false);
   const title = initialData ? 'Edit student' : 'Create student';
   const description = initialData ? 'Edit a student.' : 'Add a new student';
-  const toastMessage = initialData ? 'Student updated.' : 'Student created.';
   const action = initialData ? 'Save changes' : 'Create';
   const [preview, setPreview] = useState<any>(initialData && initialData.images);
   const defaultValues = initialData
@@ -68,19 +67,22 @@ export const StudentProductForm: React.FC<ProductFormProps> = ({ initialData, ca
     defaultValues
   });
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    const reader = new FileReader();
-    try {
-      reader.onload = () => setPreview(reader.result);
-      reader.readAsDataURL(acceptedFiles[0]);
-      form.setValue('image', acceptedFiles[0]);
-      form.clearErrors('image');
-    } catch (error) {
-      setPreview(null);
-      form.resetField('image');
-    }
-  }, []);
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      const reader = new FileReader();
+      try {
+        reader.onload = () => setPreview(reader.result);
+        reader.readAsDataURL(acceptedFiles[0]);
+        form.setValue('image', acceptedFiles[0]);
+        form.clearErrors('image');
+      } catch (error) {
+        setPreview(null);
+        form.resetField('image');
+      }
+    },
+    [form]
+  );
+  const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     maxFiles: 1,
     maxSize: 1000000,
@@ -93,7 +95,6 @@ export const StudentProductForm: React.FC<ProductFormProps> = ({ initialData, ca
       setLoading(true);
       if (initialData) {
         const formData = new FormData();
-        console.log(data.image);
         formData.append('studentNo', data.studentNo);
         formData.append('firstName', data.firstName);
         formData.append('middleName', data.middleName);
@@ -183,7 +184,7 @@ export const StudentProductForm: React.FC<ProductFormProps> = ({ initialData, ca
       form.setValue('image', initialData.images, { shouldValidate: false, shouldTouch: false });
     }
     // form.tri
-  }, [initialData && initialData.images]);
+  }, [initialData, form]);
 
   return (
     <>
