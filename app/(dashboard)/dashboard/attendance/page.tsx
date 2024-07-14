@@ -1,16 +1,12 @@
 'use client';
+import { useEffect, useState } from 'react';
 import BreadCrumb from '@/components/breadcrumb';
 import { columns } from '@/components/tables/employee-tables/columns';
 import { EmployeeTable } from '@/components/tables/employee-tables/employee-table';
-import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
-import { Attendance, Employee } from '@/constants/data';
-import { cn } from '@/lib/utils';
+import { Attendance } from '@/constants/data';
 import axios from 'axios';
-import { Plus } from 'lucide-react';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
 
 const breadcrumbItems = [{ title: 'Attendance', link: '/dashboard/attendance' }];
 

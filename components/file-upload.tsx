@@ -4,7 +4,6 @@ import { UploadDropzone } from '@uploadthing/react';
 import { Trash } from 'lucide-react';
 import Image from 'next/image';
 import { UploadFileResponse } from 'uploadthing/client';
-import { IMG_MAX_LIMIT } from './forms/section-product-form';
 import { Button } from './ui/button';
 import { useToast } from './ui/use-toast';
 
@@ -14,11 +13,7 @@ interface ImageUploadProps {
   value: UploadFileResponse[];
 }
 
-export default function FileUpload({
-  onChange,
-  onRemove,
-  value
-}: ImageUploadProps) {
+export default function FileUpload({ onChange, onRemove, value }: ImageUploadProps) {
   const { toast } = useToast();
   const onDeleteFile = (key: string) => {
     const files = value;
@@ -33,33 +28,20 @@ export default function FileUpload({
       <div className="mb-4 flex items-center gap-4">
         {!!value.length &&
           value?.map((item) => (
-            <div
-              key={item.key}
-              className="relative h-[200px] w-[200px] overflow-hidden rounded-md"
-            >
+            <div key={item.key} className="relative h-[200px] w-[200px] overflow-hidden rounded-md">
               <div className="absolute right-2 top-2 z-10">
-                <Button
-                  type="button"
-                  onClick={() => onDeleteFile(item.key)}
-                  variant="destructive"
-                  size="sm"
-                >
+                <Button type="button" onClick={() => onDeleteFile(item.key)} variant="destructive" size="sm">
                   <Trash className="h-4 w-4" />
                 </Button>
               </div>
               <div>
-                <Image
-                  fill
-                  className="object-cover"
-                  alt="Image"
-                  src={item.fileUrl || ''}
-                />
+                <Image fill className="object-cover" alt="Image" src={item.fileUrl || ''} />
               </div>
             </div>
           ))}
       </div>
       <div>
-        {value.length < IMG_MAX_LIMIT && (
+        {value.length < 12 && (
           <UploadDropzone<OurFileRouter>
             className="ut-label:text-sm ut-allowed-content:ut-uploading:text-red-300 py-2 dark:bg-zinc-800"
             endpoint="imageUploader"
@@ -69,9 +51,7 @@ export default function FileUpload({
                 if (isUploading)
                   return (
                     <>
-                      <p className="mt-2 animate-pulse text-sm text-slate-400">
-                        Img Uploading...
-                      </p>
+                      <p className="mt-2 animate-pulse text-sm text-slate-400">Img Uploading...</p>
                     </>
                   );
               }
