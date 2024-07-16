@@ -1,8 +1,8 @@
+export const dynamic = 'force-dynamic';
 import { Suspense } from 'react';
 import BreadCrumb from '@/components/breadcrumb';
 import { StudentClient } from '@/components/tables/user-tables/student-client';
 import prisma from '@/lib/prisma';
-import StudentTableLoading from '@/app/(dashboard)/dashboard/student/student-table-loading';
 
 const breadcrumbItems = [{ title: 'Student', link: '/dashboard/student' }];
 export default async function Page() {
