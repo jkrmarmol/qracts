@@ -9,8 +9,6 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import axios from 'axios';
 import { useToast } from '@/components/ui/use-toast';
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 
 interface CellActionProps {
   data: Students;
@@ -35,8 +33,7 @@ export const StudentCellAction: React.FC<CellActionProps> = ({ data }) => {
           description: 'The student profile has been deleted'
         });
         setOpen(false);
-        revalidatePath('/dashboard/student');
-        return redirect('/dashboard/student');
+        return router.refresh();
       }
       setLoading(false);
       return toast({
@@ -47,7 +44,6 @@ export const StudentCellAction: React.FC<CellActionProps> = ({ data }) => {
     } catch (err) {
       if (err instanceof AxiosError) {
         if (err.response) {
-          console.log(err.response.data);
           if (err.response.data.message === "You can't delete student profile") {
             setLoading(false);
             return toast({
