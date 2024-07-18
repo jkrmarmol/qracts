@@ -17,7 +17,7 @@ type paramsProps = {
   };
 };
 
-export default function Page({ searchParams }: paramsProps) {
+function SearchAttendance({ searchParams }: paramsProps) {
   const searchParamsNav = useSearchParams();
   const startDate = searchParamsNav?.get('startDate');
   const endDate = searchParamsNav?.get('endDate');
@@ -52,9 +52,15 @@ export default function Page({ searchParams }: paramsProps) {
       </div>
       <Separator />
 
-      <Suspense fallback={<p>Loading...</p>}>
-        <EmployeeTable searchKey="studentName" pageNo={page} columns={columns} totalUsers={attendanceLength} data={data} pageCount={0} />
-      </Suspense>
+      <EmployeeTable searchKey="studentName" pageNo={page} columns={columns} totalUsers={attendanceLength} data={data} pageCount={0} />
     </div>
+  );
+}
+
+export default function Page({ searchParams }: paramsProps) {
+  return (
+    <Suspense>
+      <SearchAttendance searchParams={searchParams} />
+    </Suspense>
   );
 }
