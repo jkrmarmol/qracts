@@ -44,19 +44,17 @@ export default function Page({ searchParams }: paramsProps) {
   }, [startDate && endDate]);
 
   return (
-    <>
-      <Suspense>
-        <div className="flex-1 space-y-4  p-4 pt-6 md:p-8">
-          <BreadCrumb items={breadcrumbItems} />
+    <Suspense fallback={<p>Loading...</p>}>
+      <div className="flex-1 space-y-4  p-4 pt-6 md:p-8">
+        <BreadCrumb items={breadcrumbItems} />
 
-          <div className="flex items-start justify-between">
-            <Heading title={`Attendance (${attendanceLength})`} description="Manage attendance" />
-          </div>
-          <Separator />
-
-          <EmployeeTable searchKey="studentName" pageNo={page} columns={columns} totalUsers={attendanceLength} data={data} pageCount={0} />
+        <div className="flex items-start justify-between">
+          <Heading title={`Attendance (${attendanceLength})`} description="Manage attendance" />
         </div>
-      </Suspense>
-    </>
+        <Separator />
+
+        <EmployeeTable searchKey="studentName" pageNo={page} columns={columns} totalUsers={attendanceLength} data={data} pageCount={0} />
+      </div>
+    </Suspense>
   );
 }
