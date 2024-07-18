@@ -40,7 +40,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
       const setEndOfDay = (isoString: Date) => {
         if (isoString) {
           const date = new Date(isoString);
-          date.setHours(23, 59, 59, 999); // Set time to 23:59:59.999 (end of the day)
+          date.setHours(23, 59, 59, 999);
           return date.toISOString();
         }
       };
@@ -51,8 +51,6 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
       if (parsedEndDate) {
         dateFilter.lte = setEndOfDay(parsedEndDate) as any;
       }
-
-      console.log(dateFilter);
 
       // End Date
 
