@@ -7,6 +7,7 @@ import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { Attendance } from '@/constants/data';
 import axios from 'axios';
+import { useSearchParams } from 'next/navigation';
 
 const breadcrumbItems = [{ title: 'Attendance', link: '/dashboard/attendance' }];
 
@@ -17,22 +18,30 @@ type paramsProps = {
 };
 
 export default function Page({ searchParams }: paramsProps) {
+  const searchParamsNav = useSearchParams();
+  const startDate = searchParamsNav?.get('startDate');
+  const endDate = searchParamsNav?.get('endDate');
   const page = Number(searchParams.page) || 1;
   const [data, setData] = useState<Attendance[]>([]);
   const attendanceLength = data.length;
 
-  // const totalUsers = employeeRes.total_users; //1000
-  // const pageCount = Math.ceil(totalUsers / pageLimit);
-
   useEffect(() => {
     (async () => {
-      const res = await axios.get('/api/attendance');
-      const attendanceRes = await res.data;
-      if (typeof attendanceRes === 'object') {
-        setData(attendanceRes);
+      if (startDate && endDate) {
+        const res = await axios.get(`/api/attendance?startDate=${startDate}&endDate=${endDate}`);
+        const attendanceRes = await res.data;
+        if (typeof attendanceRes === 'object') {
+          setData(attendanceRes);
+        }
+      } else {
+        const res = await axios.get(`/api/attendance`);
+        const attendanceRes = await res.data;
+        if (typeof attendanceRes === 'object') {
+          setData(attendanceRes);
+        }
       }
     })();
-  }, []);
+  }, [startDate && endDate]);
 
   return (
     <>

@@ -27,8 +27,4 @@ export const columns: ColumnDef<Attendance>[] = [
     header: 'DATE ATTENDED',
     cell: ({ row }) => moment(row.original.createdAt).format('MMMM Do YYYY, h:mm:ss a')
   }
-  // {
-  //   id: 'actions',
-  //   cell: ({ row }) => <CellAction data={row.original} />
-  // }
 ];

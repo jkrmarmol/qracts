@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '@/lib/prisma';
 import { compare } from 'bcrypt';
 import { auth } from '@/auth';
+import { isValid, parseISO } from 'date-fns';
 
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -19,6 +20,42 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
       const userId = session.user && session.user.id;
       if (!userId) return res.status(500).json({ message: 'Something went wrong', statusCode: 500 });
 
+      // Start Date
+      const { startDate, endDate } = req.query;
+      const parsedStartDate = startDate ? parseISO(Array.isArray(startDate) ? startDate[0] : startDate) : null;
+      const parsedEndDate = endDate ? parseISO(Array.isArray(endDate) ? endDate[0] : endDate) : null;
+
+      if ((startDate && !isValid(parsedStartDate)) || (endDate && !isValid(parsedEndDate))) {
+        return res.status(400).json({ message: 'Invalid date format', statusCode: 400 });
+      }
+
+      const dateFilter: {
+        gte: Date | undefined;
+        lte: Date | undefined;
+      } = {
+        gte: undefined,
+        lte: undefined
+      };
+
+      const setEndOfDay = (isoString: Date) => {
+        if (isoString) {
+          const date = new Date(isoString);
+          date.setHours(23, 59, 59, 999); // Set time to 23:59:59.999 (end of the day)
+          return date.toISOString();
+        }
+      };
+
+      if (parsedStartDate) {
+        dateFilter.gte = parsedStartDate;
+      }
+      if (parsedEndDate) {
+        dateFilter.lte = setEndOfDay(parsedEndDate) as any;
+      }
+
+      console.log(dateFilter);
+
+      // End Date
+
       const sections = await prisma.sections.findMany({
         where: {
           usersId: userId
@@ -34,6 +71,10 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
         where: {
           sectionsId: {
             in: sectionIds
+          },
+          createdAt: {
+            gte: dateFilter.gte,
+            lte: dateFilter.lte
           }
         },
         orderBy: {
