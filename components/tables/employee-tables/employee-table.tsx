@@ -7,7 +7,7 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { addDays, format } from 'date-fns';
+import { format } from 'date-fns';
 import { DateRange } from 'react-day-picker';
 import { cn } from '@/lib/utils';
 import { Calendar } from '@/components/ui/calendar';
@@ -61,7 +61,7 @@ export function EmployeeTable<TData, TValue>({ columns, data, searchKey, pageCou
     }
 
     if (date?.to) {
-      params.set('endDate', moment(date.from).format('YYYY-MM-DD'));
+      params.set('endDate', moment(date.to).format('YYYY-MM-DD'));
     } else {
       params.delete('endDate');
     }
