@@ -47,6 +47,15 @@ export const StudentCellAction: React.FC<CellActionProps> = ({ data }) => {
     } catch (err) {
       if (err instanceof AxiosError) {
         if (err.response) {
+          console.log(err.response.data);
+          if (err.response.data.message === "You can't delete student profile") {
+            setLoading(false);
+            return toast({
+              variant: 'destructive',
+              title: "Student profile can't delete",
+              description: 'Student have already attendance, you are not allowed to delete it.'
+            });
+          }
           if (err.response.data.message === 'User Not Found') {
             setLoading(false);
             return toast({

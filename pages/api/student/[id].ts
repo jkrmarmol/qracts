@@ -76,17 +76,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   if (req.method === 'DELETE') {
-    const session = await auth(req, res);
-    if (session === null) return res.status(401).json({ message: 'Unauthorized', statusCode: 401 });
-    const userId = session.user && session.user.id;
-    if (!userId) return res.status(500).json({ message: 'Something went wrong', statusCode: 500 });
-    const { id } = req.query;
-    if (!id || id === null) return res.status(409).json({ message: 'ID Query Required', statusCode: 401 });
-    const idString = Array.isArray(id) ? id[0] : id; // Ensure id is a string
-    const checkUserExisting = await prisma.students.findFirst({ where: { id: idString } });
-    if (!checkUserExisting || checkUserExisting === null) return res.status(404).json({ message: 'User Not Found', statusCode: 404 });
-    await prisma.students.delete({ where: { id: idString } });
-    return res.status(200).json({ message: 'Student Profile Deleted', statusCode: 200 });
+    try {
+      const session = await auth(req, res);
+      if (session === null) return res.status(401).json({ message: 'Unauthorized', statusCode: 401 });
+      const userId = session.user && session.user.id;
+      if (!userId) return res.status(500).json({ message: 'Something went wrong', statusCode: 500 });
+      const { id } = req.query;
+      if (!id || id === null) return res.status(409).json({ message: 'ID Query Required', statusCode: 401 });
+      const idString = Array.isArray(id) ? id[0] : id; // Ensure id is a string
+      const checkUserExisting = await prisma.students.findFirst({ where: { id: idString } });
+      if (!checkUserExisting || checkUserExisting === null) return res.status(404).json({ message: 'User Not Found', statusCode: 404 });
+      await prisma.students.delete({ where: { id: idString } });
+      return res.status(200).json({ message: 'Student Profile Deleted', statusCode: 200 });
+    } catch (err) {
+      if (err instanceof Error) {
+        if (err.name === 'PrismaClientKnownRequestError') {
+          return res.status(500).json({ message: "You can't delete student profile", statusCode: 500 });
+        }
+      }
+    }
   }
 
   return res.status(500).json({ message: 'Internal Server Error', status: 500 });
